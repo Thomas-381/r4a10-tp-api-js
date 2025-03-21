@@ -55,13 +55,13 @@ header nav ul li{
 }
 
 /* Style de base des liens */
-a {
+nav a {
   position: relative; /* Assure que ::after est bien positionné */
   text-decoration: none;
   color: #FFD700;
 }
 /* Barre soulignée initialement invisible */
-a::after {
+nav a::after {
   content: "";
   position: absolute;
   left: 0;
@@ -72,7 +72,7 @@ a::after {
   transition: width 0.3s ease-out;
 }
 /* Animation au survol */
-a:hover::after {
+nav a:hover::after {
   width: 100%;
 }
 

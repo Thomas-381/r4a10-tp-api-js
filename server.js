@@ -3,7 +3,9 @@ import fs from 'node:fs';
 import director from 'director';
 import serveStatic from 'serve-static';
 import finalhandler from 'finalhandler';
+import fetch from 'node-fetch';
 
+const apiToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjVmNzg1YzYxLWRhZWUtNGE5ZS1iY2I4LTBhYWMxZWExM2VmOCIsImlhdCI6MTc0MjU2MTcyOCwic3ViIjoiZGV2ZWxvcGVyL2I4YTQ5MGE0LWQ3MmUtZDVkYy1lYWYyLTExOGVmNzNhOTVhMyIsInNjb3BlcyI6WyJicmF3bHN0YXJzIl0sImxpbWl0cyI6W3sidGllciI6ImRldmVsb3Blci9zaWx2ZXIiLCJ0eXBlIjoidGhyb3R0bGluZyJ9LHsiY2lkcnMiOlsiNzguMjQzLjE3NS4yNTIiXSwidHlwZSI6ImNsaWVudCJ9XX0.T-eGgjsquYxCofpgO0j3TKd-mhadnEWy0qk8HRQ0NUZu9CWF87YBtqlV6V2Su0HxKiJWHckRPslMOF4snXizkQ"
 const port = 8090;
 
 /**
@@ -18,31 +20,25 @@ let showMain = function () {
 };
 
 /**
- * Check if the email adress is already in database.
- * @TODO: connection to the database is not yet implemented.
- * @param {string} email - the email to test.
+ * Proxy request to external API.
  */
-let checkIfEmailAlreadyExists = function (email) {
-  this.res.writeHeader(200, { 'Content-Type': 'application/json' });
-  this.res.write(
-    JSON.stringify({
-      presentInDatabase: false,
-      msg: 'This email has not already been used'
-    })
-  );
-  this.res.end();
-};
+let listeChampion = async function () {
+  const apiUrl = 'https://api.brawlstars.com/v1/brawlers';
 
-/**
- * Generate two integers from 0 to 10.
- */
-let generateCapcha = function () {
-  const op1 = Math.round(Math.random() * 10),
-    op2 = Math.round(Math.random() * 10);
-
-  this.res.writeHeader(200, { 'Content-Type': 'application/json' });
-  this.res.write(JSON.stringify({ op1: op1, op2: op2 }));
-  this.res.end();
+  try {
+    const response = await fetch('localhost:3000/v1/brawlers', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+      },
+    });
+    const data = await response.json();
+    this.res.writeHeader(200, { 'Content-Type': 'application/json' });
+    this.res.end(JSON.stringify(data));
+  } catch (error) {
+    this.res.writeHeader(500, { 'Content-Type': 'application/json' });
+    this.res.end(JSON.stringify({ error: 'Erreur lors de la requête à l\'API externe' }));
+  }
 };
 
 // Create a static server
@@ -51,8 +47,7 @@ const serve = serveStatic('assets/');
 // Specify the routes.
 let routes = {
   '/': { get: showMain },
-  '/email': { get: checkIfEmailAlreadyExists },
-  '/capcha': { get: generateCapcha }
+  '/v1/brawlers': { get: listeChampion },
 };
 
 // Create the router
@@ -62,11 +57,11 @@ let router = new director.http.Router(routes);
 let server = http.createServer(function (req, res) {
   router.dispatch(req, res, function (err) {
     if (err) {
-      serve(req, res, finalhandler(req,res));
+      serve(req, res, finalhandler(req, res));
     }
   });
 });
 
 // Listen on the specific port
 console.log('Server ready to accept requests on port %d', port);
-server.listen(8090);
+server.listen(port);
