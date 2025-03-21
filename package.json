@@ -1,0 +1,28 @@
+{
+  "name": "r4a10-tp-api",
+  "version": "1.0.0",
+  "description": "Base de code pour le **TP-API - Développement d'une interface pour API publique**",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "node server.js",
+    "cypress": "cypress open"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Thomas-381/r4a10-tp-api-js.git"
+  },
+  "author": "Thomas REYMOND & Ilyès DROUICHE",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/Thomas-381/r4a10-tp-api-js/issues"
+  },
+  "homepage": "https://github.com/Thomas-381/r4a10-tp-api-js#readme",
+  "type": "module",
+  "dependencies": {
+    "director": "^1.2.8",
+    "finalhandler": "^1.3.1",
+    "serve-static": "^1.16.2"
+  }
+  
+}
