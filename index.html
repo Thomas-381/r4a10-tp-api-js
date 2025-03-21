@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr" dir="ltr">
   <head>
-    <title>Recherche d'offres d'emploi</title>
+    <title>Better Brawl</title>
     <meta charset="utf-8" />
     <link rel="shortcut icon" type="image/x-icon" href="favicon-js.ico" />
     <link rel="stylesheet" href="styles.css" />
@@ -9,42 +9,41 @@
 
   <body>
     <header>
-      <h1>Recherche d'offres d'emploi</h1>
-
+      <h1>Better Brawl</h1>
+      <nav>
+        <ul>
+          <li><a href="#">Rechercher</a></li>
+          <li><a href="#">LeaderBoard</a></li>
+          <li><a href="#">Modes</a></li>
+          <li><a href="#">Maps</a></li>
+          <li><a href="#">Brawlers</a></li>
+        </ul>
+      </nav>
+    </header>
+    
+    <main id="conteneur">
       <p id="explication">
-        Cette page permet de rechercher des offres d'emploi via l'API publique
-        de <a href="https://www.indeed.fr/" target="_blank">indeed.fr</a>.<br />
+        Cette page permet de s'informer sur l'univers
+        de <a href="https://supercell.com/en/games/brawlstars/" target="_blank">Brawl Stars</a>.<br />
         Saisir le nom d'une ville, d'un poste, ... pour rechercher les postes
         correspondants, et enregistrer vos recherches favorites pour les
         retrouver facilement.
       </p>
-    </header>
-    <hr />
-
-    <main id="conteneur">
       <!-- Section de recherche (avec résultats) -->
       <section id="section-recherche">
         <div id="bloc-recherche">
           <!-- Champ de recherche -->
           <input type="text" placeholder="Que cherchez-vous ?" />
-
           <!-- Boutons -->
-          <button
-            id="btn-lancer-recherche"
-            type="button"
-            class="btn_clicable"
-            title="Lancer la recherche"
-          >
+          <button id="btn-lancer-recherche" type="button" class="btn_clicable" title="Lancer la recherche">
             <!-- Icone Loupe (provenant de flaticon.com) -->
             <img src="images/loupe.svg" alt="Loupe pour recherche" width="22" />
           </button>
-
           <button
             id="btn-favoris"
             type="button"
             disabled
-            title="Ajouter la recherche aux favoris"
-          >
+            title="Ajouter la recherche aux favoris">
             <!-- Icone étoile vide
 							(qui indique que la recherche ne fait pas partie des favoris) -->
             <img src="images/etoile-vide.svg" alt="Etoile vide" width="22" />
@@ -78,9 +77,9 @@
 
       <!-- Section des recherches favorites -->
       <section id="section-favoris">
-        <h2>Recherches favorites</h2>
+        <h2>Brawlers du moment</h2>
         <p>
-          Cliquer sur une recherche favorite ci-dessus pour relancer celle-ci :
+          Brawlers les plus joués
         </p>
         <ul id="liste-favoris">
           <li>
@@ -114,7 +113,5 @@
         <p class="info-vide">(Aucune recherche favorite)</p>
       </section>
     </main>
-
-    <script src="scripts/app.js"></script>
   </body>
 </html>

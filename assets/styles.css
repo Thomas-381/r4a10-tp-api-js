@@ -1,51 +1,97 @@
-/* Importation de la police Roboto */
-@import url(https://fonts.googleapis.com/css?family=Roboto);
+@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Baloo+2:wght@400;600;800&display=swap');
 
-/* Définition des principales couleurs */
 :root {
-  --text-color: #fafafa; /* (Texte presque blanc) */
-  --background: #34495e; /* (Fond bleu foncé) */
-  --background-button: #bebebe;
-  --main-green: rgb(26, 188, 156);
-  --active-green: rgb(20, 156, 128);
-  --almost-black: #2d2d2d;
+  --text-color: #FFD700; /* Jaune doré */
+
+  --background: #0F1D35; /* Bleu nuit */
+  --background-button: #E03C31; /* Rouge vif */
+  --main-blue: #007ACC; /* Bleu électrique */
+  --active-blue: #005F99; /* Bleu plus foncé */
+  --border-color: #F2A900; /* Jaune orangé */
 }
 
-* {
+body, input {
+  font-family: 'Baloo 2', sans-serif;
+  background-color: var(--background);
   color: var(--text-color);
 }
 
-body {
-  background-color: var(--background);
-  font: 14pt Roboto, Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  width: 90%;
-  margin: 40px auto;
+/* Titres */
+h1, h2, h3, h4, h5, h6, header nav ul li {
+  font-family: 'Luckiest Guy', cursive;
 }
 
-/* Paragraphes "Aucun résultat..." et "Aucune recherche..." */
-p.info-vide {
-  font-style: italic;
-}
-
-/* Partie En-tête */
-h1 {
+h1{
   text-align: center;
   font-variant: small-caps;
   font-size: 2.5em;
   color: var(--main-green);
 }
 
-#explication {
-  font-size: 1.2em;
+/* Boutons */
+button {
+  font-family: 'Luckiest Guy', cursive;
+  background-color: var(--background-button);
+  color: var(--text-color);
+  border: 3px solid var(--border-color);
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
+button:hover {
+  background-color: var(--active-blue);
+  transform: scale(1.05);
+}
+
+header nav ul{
+  display: flex;
+  justify-content: space-evenly;  
+}
+
+header nav ul li{
+  list-style-type: none;
+  text-align: center;
+}
+
+/* Style de base des liens */
+a {
+  position: relative; /* Assure que ::after est bien positionné */
+  text-decoration: none;
+  color: #FFD700;
+}
+/* Barre soulignée initialement invisible */
+a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0; /* Assure que la ligne est bien sous le texte */
+  width: 0;
+  height: 3px;
+  background-color: var(--background-button);
+  transition: width 0.3s ease-out;
+}
+/* Animation au survol */
+a:hover::after {
+  width: 100%;
+}
+
+input{
+  border: 1px solid var(--text-color);
+  padding: 0.7em;
+
+}
+/* Paragraphes "Aucun résultat..." et "Aucune recherche..." */
+p.info-vide {
+  font-style: italic;
+}
 /* Conteneur principal */
 #conteneur {
   display: flex;
+  flex-direction: column;
   flex: 1;
   margin: 30px auto;
+  width: 70%;
 }
 
 /* Section Recherche (avec résultats) */
@@ -71,7 +117,7 @@ h1 {
   color: var(--almost-black);
   flex: 1;
   padding: 0.7em;
-  border: 0.3em solid var(--main-green);
+  border: 1px solid var(--text-color);
 }
 
 #bloc-recherche > button {
