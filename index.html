@@ -12,108 +12,68 @@
       <h1>Better Brawl</h1>
       <nav>
         <ul>
-          <li><a href="#">Rechercher</a></li>
-          <li><a href="#">LeaderBoard</a></li>
-          <li><a href="#">Modes</a></li>
-          <li><a href="#">Maps</a></li>
-          <li><a href="#">Brawlers</a></li>
+          <li><a href="#section-recherche">Rechercher</a></li>
+          <li><a href="#section-brawlers">Brawlers</a></li>
+          <li><a href="#section-leaderboard">LeaderBoard</a></li>
+          <li><a href="#section-modes">Modes</a></li>
+          <li><a href="#section-maps">Maps</a></li>
         </ul>
       </nav>
     </header>
-    
+
     <main id="conteneur">
       <p id="explication">
         Cette page permet de s'informer sur l'univers
         de <a href="https://supercell.com/en/games/brawlstars/" target="_blank">Brawl Stars</a>.<br />
-        Saisir le nom d'une ville, d'un poste, ... pour rechercher les postes
-        correspondants, et enregistrer vos recherches favorites pour les
-        retrouver facilement.
+        Vous pouvez rechercher des informations sur les différents brawlers, modes, et cartes. Tapez un mot-clé dans le champ de recherche et cliquez sur la loupe pour afficher les résultats.
       </p>
-      <!-- Section de recherche (avec résultats) -->
-      <section id="section-recherche">
-        <div id="bloc-recherche">
-          <!-- Champ de recherche -->
-          <input id="champDeRecherche" type="text" placeholder="Que cherchez-vous ?" />
 
-          <!-- Boutons -->
+      <section id="section-recherche">
+        <h2>Rechercher</h2>
+        <div id="bloc-recherche">
+          <input id="champDeRecherche" type="text" placeholder="Que cherchez-vous ?" />
           <button id="btn-lancer-recherche" type="button" class="btn_clicable" title="Lancer la recherche">
-            <!-- Icone Loupe (provenant de flaticon.com) -->
             <img src="images/loupe.svg" alt="Loupe pour recherche" width="22" />
           </button>
-          <button
-            id="btn-favoris"
-            type="button"
-            disabled
-            title="Ajouter la recherche aux favoris">
-            <!-- Icone étoile vide
-							(qui indique que la recherche ne fait pas partie des favoris) -->
+          <button id="btn-favoris" type="button" disabled title="Ajouter la recherche aux favoris">
             <img src="images/etoile-vide.svg" alt="Etoile vide" width="22" />
-
-            <!-- Icone étoile pleine
-								(qui indique que la recherche fait partie des favoris) -->
-            <!-- <img src="images/etoile-pleine.svg" alt="Etoile pleine" width="22" > -->
-
-            <!-- (Les 2 icones d'étoile provenant de flaticon.com) -->
           </button>
         </div>
-
-        <!-- Résultats de recherche -->
         <div id="bloc-gif-attente">
-          <img
-            src="images/attente-ajax.gif"
-            alt="GIF Attente de résultats"
-            width="50"
-          />
+          <img src="images/attente-ajax.gif" alt="GIF Attente de résultats" width="50" />
         </div>
         <div id="bloc-resultats">
-          <p class="res">Résultat 1 ...</p>
-          <p class="res">Résultat 2 ...</p>
-          <p class="res">Résultat 3 ...</p>
-          <p class="info-vide">(Aucun résultat trouvé)</p>
+          <!-- Dynamically filled with search results -->
         </div>
       </section>
-
-      <!-- Section de séparation (avec la bordure verte) -->
-      <section id="section-separation"></section>
-
-      <!-- Section des recherches favorites -->
-      <section id="section-favoris">
-        <h2>Brawlers du moment</h2>
-        <p>
-          Brawlers les plus joués
-        </p>
-        <ul id="liste-favoris">
-          <!--<li>
-            <span title="Cliquer pour relancer la recherche">Grenoble</span>
-            <img
-              src="images/croix.svg"
-              alt="Icone pour supprimer le favori"
-              width="15"
-              title="Cliquer pour supprimer le favori"
-            />
-          </li>
-          <li>
-            <span title="Cliquer pour relancer la recherche">Lyon</span>
-            <img
-              src="images/croix.svg"
-              alt="Icone pour supprimer le favori"
-              width="15"
-              title="Cliquer pour supprimer le favori"
-            />
-          </li>
-          <li>
-            <span title="Cliquer pour relancer la recherhe.">Web</span>
-            <img
-              src="images/croix.svg"
-              alt="Icone pour supprimer le favori"
-              width="15"
-              title="Cliquer pour supprimer le favori"
-            />
-          </li>-->
+      <section id="section-brawlers">
+        <h2>Brawlers</h2>
+        <p>Liste des Brawlers disponibles et leurs statistiques</p>
+        <ul id="liste-brawlers">
+          <!-- Dynamically filled with search results -->
         </ul>
-        <p class="info-vide">(Aucune recherche favorite)</p>
+      </section>
+
+      <section id="section-leaderboard">
+        <h2>LeaderBoard</h2>
+        <p>Classement des meilleurs joueurs</p>
+      </section>
+
+      <section id="section-modes">
+        <h2>Modes</h2>
+        <p>Liste des différents modes de jeu disponibles</p>
+      </section>
+
+      <section id="section-maps">
+        <h2>Maps</h2>
+        <p>Cartes jouables en mode classé et autres</p>
+        <ul id="liste-maps">
+          <!-- Dynamically filled with search results -->
+           
+        </ul>
       </section>
     </main>
+
     <script src="scripts/app.js"></script>
   </body>
 </html>

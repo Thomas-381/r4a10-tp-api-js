@@ -79,8 +79,24 @@ nav a:hover::after {
 input{
   border: 1px solid var(--text-color);
   padding: 0.7em;
-
 }
+
+#liste-brawlers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Crée 3 colonnes égales */
+  gap: 10px; /* Espace entre les éléments */
+  list-style-type: none; /* Retirer les puces des éléments de liste */
+  padding: 0;
+}
+
+#liste-brawlers li {
+  padding: 10px;
+  border-radius: 5px; /* Bord arrondi */
+  text-align: center; /* Centrer le texte */
+  font-size: 16px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Optionnel : ajouter une ombre autour des éléments */
+}
+
 /* Paragraphes "Aucun résultat..." et "Aucune recherche..." */
 p.info-vide {
   font-style: italic;
