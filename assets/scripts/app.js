@@ -64,17 +64,52 @@ const champDeRecherche = document.querySelector('#champDeRecherche');
 const blocGifAttente = document.querySelector('#bloc-gif-attente');
 const blocResultats = document.querySelector('#bloc-resultats');
 
-// Fonction de recherche asynchrone
-/*const rechercher = async () => {
+// Fonction de calcul de la distance de Levenshtein
+function distanceLevenshtein(str1, str2) {
+    const matrice = [];  // Matrice pour stocker les distances de Levenshtein
+    let strlen1 = str1.length;
+    let strlen2 = str2.length;
+    let cout; // Variable qui va stocker le coût de substitution (0 ou 1)
+
+    // Si l'une des chaînes est vide, la distance est la longueur de l'autre chaîne
+    if (strlen1 === 0) { return strlen2; }
+    if (strlen2 === 0) { return strlen1; }
+
+    // Initialisation de la première ligne et de la première colonne de la matrice
+    for (let i = 0; i <= strlen1; i++) {
+        matrice[i] = [i];  // Remplir la première colonne
+    }
+    for (let j = 0; j <= strlen2; j++) {
+        matrice[0][j] = j;  // Remplir la première ligne
+    }
+
+    // Remplissage de la matrice avec les distances de Levenshtein
+    for (let i = 1; i <= strlen1; i++) {
+        for (let j = 1; j <= strlen2; j++) {
+            // Si les caractères des deux chaînes sont identiques, coût de 0 (pas de substitution)
+            cout = (str1[i - 1] === str2[j - 1]) ? 0 : 1;
+
+            // Calcul de la distance : insertion, suppression ou substitution
+            matrice[i][j] = Math.min(
+                matrice[i - 1][j] + 1,  // Insertion
+                matrice[i][j - 1] + 1,  // Suppression
+                matrice[i - 1][j - 1] + cout  // Substitution
+            );
+        }
+    }
+    // La distance de Levenshtein se trouve dans le coin inférieur droit de la matrice
+    return matrice[strlen1][strlen2];
+}
+
+const rechercher = async () => {
     const recherche = champDeRecherche.value.trim();
     // Si la recherche est vide, on ne fait rien
     if (!recherche) {
         return;
     }
-
     btnLancerRecherche.disabled = true;
     blocGifAttente.style.display = 'block'; // Apparition du gif d'attente
-    const apiUrl = `https://api.brawlstars.com/search?q=${encodeURIComponent(recherche)}&format=json`;
+    const apiUrl = `${proxy}/v1/brawlers`; // Utilisation de l'API proxy pour récupérer les brawlers
 
     try {
         console.log("Recherche lancée");
@@ -89,14 +124,23 @@ const blocResultats = document.querySelector('#bloc-resultats');
         console.log("Données de l'API", data);
         blocGifAttente.style.display = 'none'; // Cache le gif d'attente
 
-        if (data.results && data.results.length > 0) {
-            blocResultats.innerHTML = ''; 
-            data.results.forEach(result => {
-                const p = document.createElement('p');
-                p.classList.add('res');
-                p.textContent = result.title;
-                blocResultats.appendChild(p);
+        if (data.items && data.items.length > 0) {
+            blocResultats.innerHTML = '';
+            const results = data.items.filter(brawler => {
+                // Comparer chaque brawler avec la recherche via Levenshtein
+                return distanceLevenshtein(brawler.name.toLowerCase(), recherche.toLowerCase()) <= 3; // Seuil de 3 pour la distance de Levenshtein
             });
+
+            if (results.length > 0) {
+                results.forEach(result => {
+                    const p = document.createElement('p');
+                    p.classList.add('res');
+                    p.textContent = result.name;
+                    blocResultats.appendChild(p);
+                });
+            } else {
+                blocResultats.innerHTML = '<p>(Aucun résultat trouvé)</p>';
+            }
         } else {
             blocResultats.innerHTML = '<p>(Aucun résultat trouvé)</p>';
         }
@@ -106,10 +150,9 @@ const blocResultats = document.querySelector('#bloc-resultats');
         console.error(error);
     }
 };
-*/
-// Ajouter l'événement de clic sur le bouton de recherche
-// btnLancerRecherche.addEventListener('click',rechercher);
 
+// Ajouter l'événement de clic sur le bouton de recherche
+btnLancerRecherche.addEventListener('click',rechercher);
 
 
 
