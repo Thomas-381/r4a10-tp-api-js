@@ -2,7 +2,7 @@ import express from 'express';
 import fetch from 'node-fetch';
 const app = express();
 const port = 3000;
-const apiToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6ImIzM2RiNDk1LTViYmEtNGFmZC04ZjZkLTkxMDQxMWFhNDM4MCIsImlhdCI6MTc0MjU2MzIxMiwic3ViIjoiZGV2ZWxvcGVyL2I4YTQ5MGE0LWQ3MmUtZDVkYy1lYWYyLTExOGVmNzNhOTVhMyIsInNjb3BlcyI6WyJicmF3bHN0YXJzIl0sImxpbWl0cyI6W3sidGllciI6ImRldmVsb3Blci9zaWx2ZXIiLCJ0eXBlIjoidGhyb3R0bGluZyJ9LHsiY2lkcnMiOlsiNzguMjQzLjE4LjExMiJdLCJ0eXBlIjoiY2xpZW50In1dfQ.WvGubEglbKQw8cgxhr8JiqXzWT3kCu-UD0S176Fh9Cxgad5L_Td-FaSq1WAN4J0B_JOonbzDh17O3Sno6K_1tA"
+const apiToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjViOGVkNjVjLTEyMmQtNDMzNy1hMTYyLTU0Y2Y3MTYwNDk4MyIsImlhdCI6MTc0Mjc0MjEyNSwic3ViIjoiZGV2ZWxvcGVyL2I4YTQ5MGE0LWQ3MmUtZDVkYy1lYWYyLTExOGVmNzNhOTVhMyIsInNjb3BlcyI6WyJicmF3bHN0YXJzIl0sImxpbWl0cyI6W3sidGllciI6ImRldmVsb3Blci9zaWx2ZXIiLCJ0eXBlIjoidGhyb3R0bGluZyJ9LHsiY2lkcnMiOlsiODIuNjQuMjQ0LjY2Il0sInR5cGUiOiJjbGllbnQifV19.NXzkII_NscCaPfqMKFLHWMdoO9fzdDtDsgYO4WUNRyTrsc6oiapb5pbLI8aHVEX6sIGWskUqMcl5zCc9Cq9ixg"
 app.use(express.json());
 
 // Middleware pour gérer les en-têtes CORS
@@ -20,8 +20,8 @@ app.get('/v1/brawlers', async (req, res) => {
         const response = await fetch(apiUrl, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${apiToken}`,
-                'Accept': 'application/json',
+              'Authorization': `Bearer ${apiToken}`,
+              'Accept': 'application/json',
             },
         });
         const data = await response.json();
@@ -31,6 +31,43 @@ app.get('/v1/brawlers', async (req, res) => {
     }
 });
 
+app.get('/v1/brawlers/:idChampion', async (req, res) => {
+    const idChampion = req.params.idChampion;
+    const apiUrl = `https://api.brawlstars.com/v1/brawlers/${idChampion}`;
+  
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${apiToken}`,
+          'Accept': 'application/json',
+        },
+      });
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      res.status(500).json({ error: 'Erreur lors de la requête à l\'API externe' });
+    }
+});
+
+app.get('/v1/events/rotation', async (req, res) => {
+  const idChampion = req.params.idChampion;
+  const apiUrl = `https://api.brawlstars.com/v1/events/rotation`;
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${apiToken}`,
+        'Accept': 'application/json',
+      },
+    });
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: 'Erreur lors de la requête à l\'API externe' });
+  }
+});
 app.listen(port, () => {
     console.log(`Serveur proxy en écoute sur le port ${port}`);
 });
