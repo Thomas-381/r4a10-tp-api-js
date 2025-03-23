@@ -3,6 +3,13 @@ const proxy = "http://localhost:3000"; // Proxy local qui gère CORS
 const listeBrawlers = `${proxy}/v1/brawlers`;
 const mapsDispos = `${proxy}/v1/events/rotation`;
 
+const btnLancerRecherche = document.querySelector('#btn-lancer-recherche');
+const champDeRecherche = document.querySelector('#champDeRecherche');
+const blocGifAttente = document.querySelector('#bloc-gif-attente');
+const blocResultats = document.querySelector('#bloc-resultats');
+const btnAffichageListeBrawlers = document.getElementById('btnAffichageListeBrawlers');
+
+btnAffichageListeBrawlers.addEventListener('click', afficherBrawlers);
 const getJSON = async (url) => {
     try {
         const response = await fetch(url, {
@@ -26,26 +33,28 @@ const getJSON = async (url) => {
     }
 };
 
-getJSON(listeBrawlers).then(data => {
-    if (data && data.items) {
-        let liste = document.getElementById('liste-brawlers');
-        liste.innerHTML = "";
-        data.items.forEach(element => {
-            let a = document.createElement('a');
-            let p = document.createElement('p');
-            let img = document.createElement('img');
-            img.src = 'https://cdn.brawlify.com/brawlers/borders/' + element.id + '.png';
-            img.classList.add('icone');
-            p.textContent = element.name;
-            a.appendChild(p);
-            a.appendChild(img);
-            a.addEventListener('click', () => {
-                afficherLeaderboardBrawlers(element.id, element.name);
+function afficherBrawlers() {
+    getJSON(listeBrawlers).then(data => {
+        if (data && data.items) {
+            let liste = document.getElementById('liste-brawlers');
+            liste.innerHTML = "";
+            data.items.forEach(element => {
+                let a = document.createElement('a');
+                let p = document.createElement('p');
+                let img = document.createElement('img');
+                img.src = 'https://cdn.brawlify.com/brawlers/borders/' + element.id + '.png';
+                img.classList.add('icone');
+                p.textContent = element.name;
+                a.appendChild(p);
+                a.appendChild(img);
+                a.addEventListener('click', () => {
+                    afficherLeaderboardBrawlers(element.id, element.name);
+                });
+                liste.appendChild(a);
             });
-            liste.appendChild(a);
-        });
-    }
-});
+        }
+    });
+}
 
 getJSON(mapsDispos).then(data => {
     if (data && data.eventRotation) {
@@ -96,11 +105,6 @@ function afficherLeaderboardBrawlers(idBrawler, nomBrawler) {
         }
     });
 }
-
-const btnLancerRecherche = document.querySelector('#btn-lancer-recherche');
-const champDeRecherche = document.querySelector('#champDeRecherche');
-const blocGifAttente = document.querySelector('#bloc-gif-attente');
-const blocResultats = document.querySelector('#bloc-resultats');
 
 function convertisseurCouleur(hexaCouleur) {
     // Supprimer le préfixe "0x" et ajouter "#"
@@ -179,6 +183,9 @@ const rechercher = async () => {
                     const p = document.createElement('p');
                     p.classList.add('res');
                     p.textContent = result.name;
+                    p.addEventListener('click', () => {
+                        afficherLeaderboardBrawlers(result.id, result.name);
+                    });
                     blocResultats.appendChild(p);
                 });
             } else {

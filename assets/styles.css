@@ -211,7 +211,9 @@ p.info-vide {
   margin: 40px;
   text-align: center;
 }
-
+#bloc-resultats p.res {
+  cursor: pointer;
+}
 #bloc-resultats p.res::before {
   /* Affichage d'une flèche devant chaque résultat
 		(Cf. https://unicode-table.com/fr/21E8/ ) */
