@@ -70,7 +70,9 @@ function afficherLeaderboardBrawlers(idBrawler, nomBrawler) {
                 let baliseNom = document.createElement('p');
                 let baliseRang = document.createElement('p');
                 let baliseImage = document.createElement('img');
+                let baliseImageTrophes = document.createElement('img');
                 let baliseTrophes = document.createElement('p');
+
                 baliseImage.src = 'https://cdn.brawlify.com/profile-icons/regular/' + element.icon.id + '.png';
                 baliseImage.classList.add('iconeJoueur');
                 baliseNom.textContent = element.name;
@@ -78,10 +80,13 @@ function afficherLeaderboardBrawlers(idBrawler, nomBrawler) {
                 baliseNom.classList.add('nomJoueur');
                 baliseRang.textContent = element.rank;
                 baliseTrophes.textContent = element.trophies;
-                /* https://cdn-misc.brawlify.com/icon/trophy.png */
+                baliseImageTrophes.src = 'https://cdn-misc.brawlify.com/icon/trophy.png';
+                baliseImageTrophes.classList.add('iconeJoueur');
+
                 li.appendChild(baliseRang);
                 li.appendChild(baliseImage);
                 li.appendChild(baliseNom);
+                li.appendChild(baliseImageTrophes);
                 li.appendChild(baliseTrophes);
                 /*a.addEventListener('click', () => {
                     afficherInfoJoueurs(element.tag);

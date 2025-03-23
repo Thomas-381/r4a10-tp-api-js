@@ -131,6 +131,9 @@ height: 100px;
   width: 25px;
   height: 25px;
 }
+#leaderBoard-Players-Brawlers p:first-child{
+  width: 30px;
+}
 
 
 /* Paragraphes "Aucun résultat..." et "Aucune recherche..." */
