@@ -1,4 +1,3 @@
-const api_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjY3MmFhYmE5LThiYzEtNGNlNi1iOGI5LTlhMjBkMmY3NGRlMSIsImlhdCI6MTc0MjY2NTYwOSwic3ViIjoiZGV2ZWxvcGVyL2NjNjQzYTMwLWFkNDktZWQ2Mi0wYzBjLWZjNjhiMmViYWVkYSIsInNjb3BlcyI6WyJicmF3bHN0YXJzIl0sImxpbWl0cyI6W3sidGllciI6ImRldmVsb3Blci9zaWx2ZXIiLCJ0eXBlIjoidGhyb3R0bGluZyJ9LHsiY2lkcnMiOlsiNDYuMTkzLjQuOTgiXSwidHlwZSI6ImNsaWVudCJ9XX0.r4Bu2aGp6qL_2zCrw6cOeiXQg3Vgyx1hrOiwJXB-IPrcgv2r9T0EL-uuBsxoh05CI_NGYlO5vxPKopHRVOPscA";
 const proxy = "http://localhost:3000"; // Proxy local qui gère CORS
 
 const listeBrawlers = `${proxy}/v1/brawlers`;
@@ -9,8 +8,8 @@ const getJSON = async (url) => {
         const response = await fetch(url, {
             method: 'GET',
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${api_token}` // Ajout du token pour le proxy
+                "Content-Type": "application/json"/*,
+                "Authorization": `Bearer ${api_token}` */// Pas besoin du token, c'est le proxy qui s'en charge
             },
         });
 
@@ -32,9 +31,17 @@ getJSON(listeBrawlers).then(data => {
         let liste = document.getElementById('liste-brawlers');
         liste.innerHTML = "";
         data.items.forEach(element => {
-            let li = document.createElement('li');
-            li.textContent = element.name;
-            liste.appendChild(li);
+            let a = document.createElement('a');
+            let p = document.createElement('p');
+            let img = document.createElement('img');
+            img.src = 'https://cdn.brawlify.com/brawlers/borders/' + element.id + '.png';
+            p.textContent = element.name;
+            a.appendChild(p);
+            a.appendChild(img);
+            a.addEventListener('click', () => {
+                liste.innerHTML = "";
+            });
+            liste.appendChild(a);
         });
     }
 });
@@ -58,7 +65,7 @@ const blocGifAttente = document.querySelector('#bloc-gif-attente');
 const blocResultats = document.querySelector('#bloc-resultats');
 
 // Fonction de recherche asynchrone
-const rechercher = async () => {
+/*const rechercher = async () => {
     const recherche = champDeRecherche.value.trim();
     // Si la recherche est vide, on ne fait rien
     if (!recherche) {
@@ -99,27 +106,9 @@ const rechercher = async () => {
         console.error(error);
     }
 };
-
-// Ajouter l'événement de clic sur le bouton de recherche
-btnLancerRecherche.addEventListener('click',rechercher);
-
-
-
-
-
-/*async function fonctionlisteBrawlers(listeBoutonsEditable) {
-    console.log("Appel API");
-    return await fetch("https://api.brawlstars.com/v1/brawlers", {
-        method: "GET",
-        headers: {
-            "Accept": "application/json",
-            "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjE5ZmI0YTM3LTVhNzYtNGU1My04MzAwLTg4MzI3OThmNzJkNyIsImlhdCI6MTc0MjU1MDgyOCwic3ViIjoiZGV2ZWxvcGVyL2I4YTQ5MGE0LWQ3MmUtZDVkYy1lYWYyLTExOGVmNzNhOTVhMyIsInNjb3BlcyI6WyJicmF3bHN0YXJzIl0sImxpbWl0cyI6W3sidGllciI6ImRldmVsb3Blci9zaWx2ZXIiLCJ0eXBlIjoidGhyb3R0bGluZyJ9LHsiY2lkcnMiOlsiNzguMjQzLjE3Ni4xNzIiXSwidHlwZSI6ImNsaWVudCJ9XX0.G8uqNoWewQrUVLCVDalXM3JBV7pmJhXx-AWhqAlO_7tlYVSLdBjdQSKJlnGMdI3n7ofYJuMS9DytttJHicd7QA",
-        }
-    });
-}
-
-console.log(fonctionlisteBrawlers());    
 */
+// Ajouter l'événement de clic sur le bouton de recherche
+// btnLancerRecherche.addEventListener('click',rechercher);
 
 
 
