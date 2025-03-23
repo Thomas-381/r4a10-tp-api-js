@@ -31,9 +31,9 @@ app.get('/v1/brawlers', async (req, res) => {
     }
 });
 
-app.get('/v1/brawlers/:idChampion', async (req, res) => {
+app.get('/v1/rankings/global/brawlers/:idChampion', async (req, res) => {
     const idChampion = req.params.idChampion;
-    const apiUrl = `https://api.brawlstars.com/v1/brawlers/${idChampion}`;
+    const apiUrl = `https://api.brawlstars.com/v1/rankings/global/brawlers/${idChampion}`;
   
     try {
       const response = await fetch(apiUrl, {

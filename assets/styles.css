@@ -102,10 +102,37 @@ input{
 #liste-brawlers a:hover {
   cursor: pointer;
 }
-#liste-brawlers img {
+.icone {
 width: 100px;
 height: 100px;
 }
+.nomJoueur {
+  width: 200px;
+}
+#leaderBoard-Players-Brawlers {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  list-style-type: none;
+  padding: 0;
+  max-height: 500px;
+  scrollbar-width: auto;
+  overflow-y: scroll;
+}
+#leaderBoard-Players-Brawlers li{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: stretch;
+  gap: 5px;
+  padding: 0;
+}
+.iconeJoueur {
+  width: 25px;
+  height: 25px;
+}
+
+
 /* Paragraphes "Aucun résultat..." et "Aucune recherche..." */
 p.info-vide {
   font-style: italic;
