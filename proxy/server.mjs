@@ -2,7 +2,7 @@ import express from 'express';
 import fetch from 'node-fetch';
 const app = express();
 const port = 3000;
-const apiToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjdiOGE0MGMzLWM1NTMtNDI5OC1iMjAzLTYwYWM0MjRiZjRkMyIsImlhdCI6MTc0MjgxNjIyNSwic3ViIjoiZGV2ZWxvcGVyL2I4YTQ5MGE0LWQ3MmUtZDVkYy1lYWYyLTExOGVmNzNhOTVhMyIsInNjb3BlcyI6WyJicmF3bHN0YXJzIl0sImxpbWl0cyI6W3sidGllciI6ImRldmVsb3Blci9zaWx2ZXIiLCJ0eXBlIjoidGhyb3R0bGluZyJ9LHsiY2lkcnMiOlsiMTMwLjE5MC4xMTQuMjA3Il0sInR5cGUiOiJjbGllbnQifV19.zr6HXNJEQkC0KnyWOZrtOV-xRciCFEHV-ojxe1YeNRFTd0GaZa5jcUA1O0BL2Pgu6TKI5DLgaukAJBwy6vwr2Q";
+const apiToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjIyMmQ1NjkxLTA4NjYtNGQzYy04ZjMzLThkZTUxODVlZDFjYiIsImlhdCI6MTc0MjgyMDAwNywic3ViIjoiZGV2ZWxvcGVyL2I4YTQ5MGE0LWQ3MmUtZDVkYy1lYWYyLTExOGVmNzNhOTVhMyIsInNjb3BlcyI6WyJicmF3bHN0YXJzIl0sImxpbWl0cyI6W3sidGllciI6ImRldmVsb3Blci9zaWx2ZXIiLCJ0eXBlIjoidGhyb3R0bGluZyJ9LHsiY2lkcnMiOlsiMzcuMTcwLjI0OC4yMjMiXSwidHlwZSI6ImNsaWVudCJ9XX0.I9C8FDc7GcQVFTloLfOTW-BcN1UE_GcnUtdgOvzogloR5hb2X6Q02mc8PT5BkeZqDf7JX1qzQAZEMPNApyYGwA";
 app.use(express.json());
 
 // Middleware pour gérer les en-têtes CORS
@@ -20,8 +20,9 @@ app.use((req, res, next) => {
 
 app.get('/v1/:route', async (req, res) => {
   const route = req.params.route;
-  const apiUrl = `https://api.brawlstars.com/v1/` + decodeURIComponent(route);
-  console.log(apiUrl);
+  let apiUrl = `https://api.brawlstars.com/v1/` + decodeURIComponent(route);
+  apiUrl = apiUrl.replace("#", "%23");
+  console.log("Accés à :" + apiUrl);
     try {
         const response = await fetch(apiUrl, {
             method: 'GET',
