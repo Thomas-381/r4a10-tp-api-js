@@ -5,18 +5,26 @@ const mapsDispos = `${proxy}/v1/events/rotation`;
 
 const btnLancerRecherche = document.querySelector('#btn-lancer-recherche');
 const champDeRecherche = document.querySelector('#champDeRecherche');
+const btnFavoris = document.querySelector('#btn-favoris');
+const listeFavoris = document.querySelector("#liste-favoris");
 const blocGifAttente = document.querySelector('#bloc-gif-attente');
 const blocResultats = document.querySelector('#bloc-resultats');
 const btnAffichageListeBrawlers = document.getElementById('btnAffichageListeBrawlers');
+const listeBrawlersElement = document.querySelector('#liste-brawlers');
+const listeMapsElement = document.querySelector('#liste-maps');
+const leaderBoardElement = document.querySelector('#leaderBoard-Players-Brawlers');
+const nomBrawlerElement = document.querySelector('#nomBrawler');
+
+let recherche = champDeRecherche.value.trim();
 
 btnAffichageListeBrawlers.addEventListener('click', afficherBrawlers);
+
 const getJSON = async (url) => {
     try {
         const response = await fetch(url, {
             method: 'GET',
             headers: {
-                "Content-Type": "application/json"/*,
-                "Authorization": `Bearer ${api_token}` */// Pas besoin du token, c'est le proxy qui s'en charge
+                "Content-Type": "application/json"
             },
         });
 
@@ -36,8 +44,7 @@ const getJSON = async (url) => {
 function afficherBrawlers() {
     getJSON(listeBrawlers).then(data => {
         if (data && data.items) {
-            let liste = document.getElementById('liste-brawlers');
-            liste.innerHTML = "";
+            listeBrawlersElement.innerHTML = "";
             data.items.forEach(element => {
                 let a = document.createElement('a');
                 let p = document.createElement('p');
@@ -50,30 +57,30 @@ function afficherBrawlers() {
                 a.addEventListener('click', () => {
                     afficherLeaderboardBrawlers(element.id, element.name);
                 });
-                liste.appendChild(a);
+                listeBrawlersElement.appendChild(a);
             });
         }
     });
 }
 
-getJSON(mapsDispos).then(data => {
-    if (data && data.eventRotation) {
-        let liste = document.getElementById('liste-maps');
-        liste.innerHTML = "";
-        data.eventRotation.forEach(event => {
-            let li = document.createElement('li');
-            li.textContent = `${event.event.mode} - ${event.event.map}`;
-            liste.appendChild(li);
-        });
-    }
-});
+function afficherMaps() {
+    getJSON(mapsDispos).then(data => {
+        if (data && data.eventRotation) {
+            listeMapsElement.innerHTML = "";
+            data.eventRotation.forEach(event => {
+                let li = document.createElement('li');
+                li.textContent = `${event.event.mode} - ${event.event.map}`;
+                listeMapsElement.appendChild(li);
+            });
+        }
+    });
+}
 
 function afficherLeaderboardBrawlers(idBrawler, nomBrawler) {
     getJSON(`${proxy}/v1/rankings/global/brawlers/${idBrawler}`).then(data => {
         if (data && data.items) {
-            let liste = document.getElementById('leaderBoard-Players-Brawlers');
-            liste.innerHTML = "";
-            document.getElementById('nomBrawler').innerHTML = nomBrawler;
+            leaderBoardElement.innerHTML = "";
+            nomBrawlerElement.innerHTML = nomBrawler;
             data.items.forEach(element => {
                 let li = document.createElement('li');
                 let baliseNom = document.createElement('p');
@@ -97,85 +104,71 @@ function afficherLeaderboardBrawlers(idBrawler, nomBrawler) {
                 li.appendChild(baliseNom);
                 li.appendChild(baliseImageTrophes);
                 li.appendChild(baliseTrophes);
-                /*a.addEventListener('click', () => {
-                    afficherInfoJoueurs(element.tag);
-                });*/
-                liste.appendChild(li);
+                leaderBoardElement.appendChild(li);
             });
         }
     });
 }
 
 function convertisseurCouleur(hexaCouleur) {
-    // Supprimer le préfixe "0x" et ajouter "#"
-    const cssColor = `#${hexaCouleur.slice(2)}`;
-    return cssColor;
-  }
-// Fonction de calcul de la distance de Levenshtein
+    return `#${hexaCouleur.slice(2)}`;
+}
+
 function distanceLevenshtein(str1, str2) {
-    const matrice = [];  // Matrice pour stocker les distances de Levenshtein
+    const matrice = [];
     let strlen1 = str1.length;
     let strlen2 = str2.length;
-    let cout; // Variable qui va stocker le coût de substitution (0 ou 1)
+    let cout;
 
-    // Si l'une des chaînes est vide, la distance est la longueur de l'autre chaîne
     if (strlen1 === 0) { return strlen2; }
     if (strlen2 === 0) { return strlen1; }
 
-    // Initialisation de la première ligne et de la première colonne de la matrice
     for (let i = 0; i <= strlen1; i++) {
-        matrice[i] = [i];  // Remplir la première colonne
+        matrice[i] = [i];
     }
     for (let j = 0; j <= strlen2; j++) {
-        matrice[0][j] = j;  // Remplir la première ligne
+        matrice[0][j] = j;
     }
 
-    // Remplissage de la matrice avec les distances de Levenshtein
     for (let i = 1; i <= strlen1; i++) {
         for (let j = 1; j <= strlen2; j++) {
-            // Si les caractères des deux chaînes sont identiques, coût de 0 (pas de substitution)
             cout = (str1[i - 1] === str2[j - 1]) ? 0 : 1;
-
-            // Calcul de la distance : insertion, suppression ou substitution
             matrice[i][j] = Math.min(
-                matrice[i - 1][j] + 1,  // Insertion
-                matrice[i][j - 1] + 1,  // Suppression
-                matrice[i - 1][j - 1] + cout  // Substitution
+                matrice[i - 1][j] + 1,
+                matrice[i][j - 1] + 1,
+                matrice[i - 1][j - 1] + cout
             );
         }
     }
-    // La distance de Levenshtein se trouve dans le coin inférieur droit de la matrice
     return matrice[strlen1][strlen2];
 }
 
 const rechercher = async () => {
-    const recherche = champDeRecherche.value.trim();
-    // Si la recherche est vide, on ne fait rien
+    recherche = champDeRecherche.value.trim();
+
     if (!recherche) {
         return;
     }
+
     btnLancerRecherche.disabled = true;
-    blocGifAttente.style.display = 'block'; // Apparition du gif d'attente
-    const apiUrl = `${proxy}/v1/brawlers`; // Utilisation de l'API proxy pour récupérer les brawlers
+    blocGifAttente.style.display = 'block';
+
+    const apiUrl = `${proxy}/v1/brawlers`;
 
     try {
-        console.log("Recherche lancée");
         const response = await fetch(apiUrl);
-        console.log("Réponse reçue");
 
         if (!response.ok) {
             throw new Error('Erreur lors de la récupération des données');
         }
 
         const data = await response.json();
-        console.log("Données de l'API", data);
-        blocGifAttente.style.display = 'none'; // Cache le gif d'attente
+        blocGifAttente.style.display = 'none';
 
         if (data.items && data.items.length > 0) {
             blocResultats.innerHTML = '';
             const results = data.items.filter(brawler => {
-                // Comparer chaque brawler avec la recherche via Levenshtein
-                return distanceLevenshtein(brawler.name.toLowerCase(), recherche.toLowerCase()) <= 3; // Seuil de 3 pour la distance de Levenshtein
+                return distanceLevenshtein(brawler.name.toLowerCase(), recherche.toLowerCase()) <= 3;
             });
 
             if (results.length > 0) {
@@ -201,12 +194,42 @@ const rechercher = async () => {
     }
 };
 
-// Ajouter l'événement de clic sur le bouton de recherche
-btnLancerRecherche.addEventListener('click',rechercher);
+btnLancerRecherche.addEventListener('click', rechercher);
 
+function afficherFavoris() {
+    const favoris = JSON.parse(localStorage.getItem("favoris")) || [];
+    listeFavoris.innerHTML = "";
 
+    favoris.forEach(nom => {
+        const li = document.createElement("li");
+        const span = document.createElement("span");
+        span.textContent = nom;
+        span.addEventListener("click", () => {
+            champDeRecherche.value = nom;  // Met à jour le champ de recherche avec le favori
+            rechercher(); // Lance la recherche pour ce favori
+        });
+        li.appendChild(span);
+        listeFavoris.appendChild(li);
+    });
+}
 
+function ajouterFavori(nom) {
+    let favoris = JSON.parse(localStorage.getItem("favoris")) || [];
+    if (!favoris.includes(nom)) {
+        favoris.push(nom);
+        localStorage.setItem("favoris", JSON.stringify(favoris));
+    }
+    afficherFavoris();
+}
 
+btnFavoris.addEventListener("click", () => {
+    const nomBrawler = champDeRecherche.value.trim();
+    if (nomBrawler) {
+        ajouterFavori(nomBrawler);
+    }
+});
+
+afficherFavoris();
 
 
 

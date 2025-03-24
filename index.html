@@ -35,7 +35,7 @@
           <button id="btn-lancer-recherche" type="button" class="btn_clicable" title="Lancer la recherche">
             <img src="images/loupe.svg" alt="Loupe pour recherche" width="22" />
           </button>
-          <button id="btn-favoris" type="button" disabled title="Ajouter la recherche aux favoris">
+          <button id="btn-favoris" type="button" title="Ajouter la recherche aux favoris">
             <img src="images/etoile-vide.svg" alt="Etoile vide" width="22" />
           </button>
         </div>
@@ -46,6 +46,13 @@
           <!-- Dynamically filled with search results -->
         </div>
       </section>
+      <section id="favoris">
+        <h2>Favoris</h2>
+        <p>Liste de vos recherches favorites</p>
+        <ul id="liste-favoris">
+          <!-- Dynamically filled with search results -->
+        </ul>
+      </section> 
       <section id="section-brawlers">
         <h2>Brawlers</h2>
         <p>Liste des Brawlers disponibles.</p>
@@ -57,7 +64,9 @@
       <section id="section-leaderboard">
         <h2>LeaderBoard</h2>
           <p>Classement des meilleurs joueurs avec <span id="nomBrawler" style="font-weight: bold;"></span></p>
-        <ul id="leaderBoard-Players-Brawlers"></ul>
+        <ol id="leaderBoard-Players-Brawlers">
+          <!-- Dynamically filled with search results -->
+        </ol>
       </section>
 
       <section id="section-modes">
@@ -70,11 +79,9 @@
         <p>Cartes jouables en mode classé et autres</p>
         <ul id="liste-maps">
           <!-- Dynamically filled with search results -->
-           
         </ul>
       </section>
     </main>
-
     <script src="scripts/app.js"></script>
   </body>
 </html>

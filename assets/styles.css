@@ -2,7 +2,6 @@
 
 :root {
   --text-color: #FFD700; /* Jaune doré */
-
   --background: #0F1D35; /* Bleu nuit */
   --background-button: #E03C31; /* Rouge vif */
   --main-blue: #007ACC; /* Bleu électrique */
@@ -21,11 +20,11 @@ h1, h2, h3, h4, h5, h6, header nav ul li {
   font-family: 'Luckiest Guy', cursive;
 }
 
-h1{
+h1 {
   text-align: center;
   font-variant: small-caps;
   font-size: 2.5em;
-  color: var(--main-green);
+  color: var(--text-color);
 }
 
 /* Boutons */
@@ -44,48 +43,48 @@ button:hover {
   transform: scale(1.05);
 }
 
-header nav ul{
+header nav ul {
   display: flex;
-  justify-content: space-evenly;  
+  justify-content: space-evenly;
 }
 
-header nav ul li{
+header nav ul li {
   list-style-type: none;
   text-align: center;
 }
 
 /* Style de base des liens */
 nav a {
-  position: relative; /* Assure que ::after est bien positionné */
+  position: relative;
   text-decoration: none;
-  color: #FFD700;
+  color: var(--text-color);
 }
-/* Barre soulignée initialement invisible */
+
 nav a::after {
   content: "";
   position: absolute;
   left: 0;
-  bottom: 0; /* Assure que la ligne est bien sous le texte */
+  bottom: 0;
   width: 0;
   height: 3px;
   background-color: var(--background-button);
   transition: width 0.3s ease-out;
 }
-/* Animation au survol */
+
 nav a:hover::after {
   width: 100%;
 }
 
-input{
+input {
   border: 1px solid var(--text-color);
   padding: 0.7em;
 }
 
 #liste-brawlers {
   display: grid;
-  grid-template-columns: repeat(5, 1fr); /* Crée 3 colonnes égales */
-  gap: 10px; /* Espace entre les éléments */
-  list-style-type: none; /* Retirer les puces des éléments de liste */
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  list-style-type: none;
   padding: 0;
   max-height: 375px;
   scrollbar-width: auto;
@@ -94,21 +93,25 @@ input{
 
 #liste-brawlers a {
   padding: 10px;
-  border-radius: 5px; /* Bord arrondi */
-  text-align: center; /* Centrer le texte */
+  border-radius: 5px;
+  text-align: center;
   font-size: 16px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Optionnel : ajouter une ombre autour des éléments */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
+
 #liste-brawlers a:hover {
   cursor: pointer;
 }
+
 .icone {
-width: 100px;
-height: 100px;
+  width: 100px;
+  height: 100px;
 }
+
 .nomJoueur {
   width: 200px;
 }
+
 #leaderBoard-Players-Brawlers {
   display: flex;
   flex-direction: column;
@@ -119,7 +122,8 @@ height: 100px;
   scrollbar-width: auto;
   overflow-y: scroll;
 }
-#leaderBoard-Players-Brawlers li{
+
+#leaderBoard-Players-Brawlers li {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -127,19 +131,21 @@ height: 100px;
   gap: 5px;
   padding: 0;
 }
+
 .iconeJoueur {
   width: 25px;
   height: 25px;
 }
-#leaderBoard-Players-Brawlers p:first-child{
+
+#leaderBoard-Players-Brawlers p:first-child {
   width: 30px;
 }
-
 
 /* Paragraphes "Aucun résultat..." et "Aucune recherche..." */
 p.info-vide {
   font-style: italic;
 }
+
 /* Conteneur principal */
 #conteneur {
   display: flex;
@@ -169,7 +175,7 @@ p.info-vide {
 }
 
 #bloc-recherche > input[type="text"] {
-  color: var(--almost-black);
+  color: var(--text-color);
   flex: 1;
   padding: 0.7em;
   border: 1px solid var(--text-color);
@@ -177,22 +183,15 @@ p.info-vide {
 
 #bloc-recherche > button {
   padding: 0.8em 0.8em;
-  /* Bordure invisible pour que le hover ne bouge pas le bouton */
-  border: 1px solid var(--main-green);
-
-  /* Par défaut, les boutons sont en gris
-	 (S'ils sont "clicables", ils passent en vert) */
+  border: 1px solid var(--main-blue);
   background-color: var(--background-button);
 }
 
-/* Apparences des boutons clicables */
 #bloc-recherche > button.btn_clicable {
-  background-color: var(--main-green);
+  background-color: var(--main-blue);
 }
 
 #bloc-recherche > button:focus {
-  /* Pour éviter un affichage disgracieux
-		quand le bouton reste en focus */
   outline: 0 !important;
 }
 
@@ -202,7 +201,7 @@ p.info-vide {
 }
 
 #bloc-recherche > button.btn_clicable:active {
-  background-color: var(--active-green);
+  background-color: var(--active-blue);
 }
 
 /* GIF de chargement (caché par défaut) */
@@ -211,34 +210,29 @@ p.info-vide {
   margin: 40px;
   text-align: center;
 }
+
 #bloc-resultats p.res {
   cursor: pointer;
 }
+
 #bloc-resultats p.res::before {
-  /* Affichage d'une flèche devant chaque résultat
-		(Cf. https://unicode-table.com/fr/21E8/ ) */
   content: "\21E8\00A0";
 }
 
 /* Section de la barre de séparation */
 #section-separation {
-  border-left: 2px dashed var(--main-green);
+  border-left: 2px dashed var(--main-blue);
   margin: 0 20px;
 }
 
 /* Section des recherches favorites */
 #section-favoris {
   flex: 0 0 300px;
-  margin-top: 0;
   margin-bottom: 20px;
 }
 
 #section-favoris h2 {
   margin-top: 0;
-}
-
-#section-favoris p {
-  margin-bottom: 8px;
 }
 
 #liste-favoris li {
@@ -251,7 +245,42 @@ p.info-vide {
 }
 
 #liste-favoris li span:hover {
-  color: var(--main-green);
+  color: var(--main-blue);
+}
+
+#bloc-resultats {
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 20px;
+  border: 2px solid var(--border-color);
+}
+
+#bloc-resultats h2 {
+  text-align: center;
+  color: var(--text-color);
+}
+
+#bloc-resultats ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+#bloc-resultats li {
+  background-color: var(--background-button);
+  color: var(--text-color);
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: 2px solid var(--border-color);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#bloc-resultats li:hover {
+  background-color: var(--active-blue);
+  transform: scale(1.05);
 }
 
 /* Media-query pour gérer l'affichage sur petit écran */
@@ -261,7 +290,7 @@ p.info-vide {
   }
 
   #section-separation {
-    border-top: 2px dashed var(--main-green);
+    border-top: 2px dashed var(--main-blue);
     margin: 0 -10px 40px -10px;
   }
 
