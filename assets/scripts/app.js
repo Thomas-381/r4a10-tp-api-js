@@ -1,5 +1,7 @@
 const proxy = "http://localhost:3000/v1/"; // Proxy local qui gère CORS
 
+const limiteTailleRequete = 100; // Limite de joueurs à afficher dans le leaderboard
+
 const listeBrawlers = proxy + encodeURIComponent("brawlers");
 const mapsDispos = proxy + encodeURIComponent("events/rotation");
 
@@ -9,16 +11,14 @@ const btnFavoris = document.querySelector('#btn-favoris');
 const listeFavoris = document.querySelector("#liste-favoris");
 const blocGifAttente = document.querySelector('#bloc-gif-attente');
 const blocResultats = document.querySelector('#bloc-resultats');
+
 const btnAffichageListeBrawlers = document.getElementById('btnAffichageListeBrawlers');
-const listeBrawlersElement = document.querySelector('#liste-brawlers');
-const listeMapsElement = document.querySelector('#liste-maps');
-const leaderBoardElement = document.querySelector('#leaderBoard-Players-Brawlers');
-const nomBrawlerElement = document.querySelector('#nomBrawler');
+const btnAffichageRotaMaps = document.getElementById('btnAffichageRotaMaps');
+const btnAffichageLeaderboard = document.getElementById('btnAffichageLeaderboard');
 
-let recherche = champDeRecherche.value.trim();
-
+btnAffichageLeaderboard.addEventListener('click', afficherLeaderboard);
 btnAffichageListeBrawlers.addEventListener('click', afficherBrawlers);
-
+btnAffichageRotaMaps.addEventListener('click', afficherRotationMaps);
 const getJSON = async (url) => {
     try {
         const response = await fetch(url, {
@@ -69,18 +69,21 @@ function afficherMaps() {
             listeMapsElement.innerHTML = "";
             data.eventRotation.forEach(event => {
                 let li = document.createElement('li');
-                li.textContent = `${event.event.mode} - ${event.event.map}`;
-                listeMapsElement.appendChild(li);
+                li.innerHTML = `<span style="font-weight: bold;">${event.event.mode}</span> sur la carte <span style="font-weight: bold;">${event.event.map}</span>`;
+                liste.appendChild(li);
             });
         }
     });
 }
 
+
+function recupNbReelTrophe(tag) {
+}
 function afficherLeaderboardBrawlers(idBrawler, nomBrawler) {
     getJSON(proxy + encodeURIComponent("rankings/global/brawlers/" + idBrawler)).then(data => {
         if (data && data.items) {
             leaderBoardElement.innerHTML = "";
-            nomBrawlerElement.innerHTML = nomBrawler;
+            nomBrawlerElement.innerHTML = "avec " + nomBrawler;
             data.items.forEach(element => {
                 let li = document.createElement('li');
                 let baliseNom = document.createElement('p');
@@ -104,16 +107,64 @@ function afficherLeaderboardBrawlers(idBrawler, nomBrawler) {
                 li.appendChild(baliseNom);
                 li.appendChild(baliseImageTrophes);
                 li.appendChild(baliseTrophes);
-                leaderBoardElement.appendChild(li);
+                /*a.addEventListener('click', () => {
+                    afficherInfoJoueurs(element.tag);
+                });*/
+                liste.appendChild(li);
+            });
+        }
+    });
+}
+function afficherLeaderboard() {
+    getJSON(proxy + encodeURIComponent(`rankings/global/players?limit=${limiteTailleRequete}`)).then(data => {
+        if (data && data.items) {
+            let liste = document.getElementById('leaderBoard-Players-Brawlers');
+            liste.innerHTML = "";
+            document.getElementById('nomBrawler').innerHTML = ": ";
+            data.items.forEach(element => {
+                let li = document.createElement('li');
+                let baliseNom = document.createElement('p');
+                let baliseRang = document.createElement('p');
+                let baliseImage = document.createElement('img');
+
+                baliseImage.src = 'https://cdn.brawlify.com/profile-icons/regular/' + element.icon.id + '.png';
+                baliseImage.classList.add('iconeJoueur');
+                baliseNom.textContent = element.name;
+                baliseNom.style.color = convertisseurCouleur(element.nameColor);
+                baliseNom.classList.add('nomJoueur');
+                baliseRang.textContent = element.rank;
+
+                li.appendChild(baliseRang);
+                li.appendChild(baliseImage);
+                li.appendChild(baliseNom);
+                /*a.addEventListener('click', () => {
+                    afficherInfoJoueurs(element.tag);
+                });*/
+                liste.appendChild(li);
             });
         }
     });
 }
 
+/*function recupNbReelTrophe(tag) {
+    const sendTag = tag.replace("#", "%23");
+    getJSON(proxy + encodeURIComponent("players/" + tag)).then(data => {
+        if (data) {
+            return data.trophies;
+        }
+    });
+}*/
+
 function convertisseurCouleur(hexaCouleur) {
     return `#${hexaCouleur.slice(2)}`;
 }
 
+    // Supprimer le préfixe "0x" et ajouter "#"
+    const cssColor = `#${hexaCouleur.slice(2)}`;
+    return cssColor;
+}
+
+// Fonction de calcul de la distance de Levenshtein
 function distanceLevenshtein(str1, str2) {
     const matrice = [];
     let strlen1 = str1.length;
@@ -195,6 +246,14 @@ const rechercher = async () => {
     }
 };
 
+// Ajouter l'événement de clic sur le bouton de recherche
+btnLancerRecherche.addEventListener('click',rechercher);
+champDeRecherche.addEventListener('blur', rechercher);
+champDeRecherche.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        rechercher();
+    }
+});
 btnLancerRecherche.addEventListener('click', rechercher);
 
 function afficherFavoris() {
