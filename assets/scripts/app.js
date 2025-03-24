@@ -1,7 +1,7 @@
-const proxy = "http://localhost:3000"; // Proxy local qui gère CORS
+const proxy = "http://localhost:3000/v1/"; // Proxy local qui gère CORS
 
-const listeBrawlers = `${proxy}/v1/brawlers`;
-const mapsDispos = `${proxy}/v1/events/rotation`;
+const listeBrawlers = proxy + encodeURIComponent("brawlers");
+const mapsDispos = proxy + encodeURIComponent("events/rotation");
 
 const btnLancerRecherche = document.querySelector('#btn-lancer-recherche');
 const champDeRecherche = document.querySelector('#champDeRecherche');
@@ -77,7 +77,7 @@ function afficherMaps() {
 }
 
 function afficherLeaderboardBrawlers(idBrawler, nomBrawler) {
-    getJSON(`${proxy}/v1/rankings/global/brawlers/${idBrawler}`).then(data => {
+    getJSON(proxy + encodeURIComponent("rankings/global/brawlers/" + idBrawler)).then(data => {
         if (data && data.items) {
             leaderBoardElement.innerHTML = "";
             nomBrawlerElement.innerHTML = nomBrawler;
@@ -151,12 +151,12 @@ const rechercher = async () => {
     }
 
     btnLancerRecherche.disabled = true;
-    blocGifAttente.style.display = 'block';
-
-    const apiUrl = `${proxy}/v1/brawlers`;
+    blocGifAttente.style.display = 'block'; // Apparition du gif d'attente
 
     try {
-        const response = await fetch(apiUrl);
+        console.log("Recherche lancée");
+        const response = await fetch(listeBrawlers);
+        console.log("Réponse reçue");
 
         if (!response.ok) {
             throw new Error('Erreur lors de la récupération des données');
@@ -173,13 +173,14 @@ const rechercher = async () => {
 
             if (results.length > 0) {
                 results.forEach(result => {
-                    const p = document.createElement('p');
-                    p.classList.add('res');
-                    p.textContent = result.name;
-                    p.addEventListener('click', () => {
+                    const a = document.createElement('a');
+                    a.classList.add('res');
+                    a.textContent = result.name;
+                    a.href = '#section-leaderboard';
+                    a.addEventListener('click', () => {
                         afficherLeaderboardBrawlers(result.id, result.name);
                     });
-                    blocResultats.appendChild(p);
+                    blocResultats.appendChild(a);
                 });
             } else {
                 blocResultats.innerHTML = '<p>(Aucun résultat trouvé)</p>';
