@@ -1,5 +1,10 @@
-# Base de code pour le TP-API (R4.A.10)
+# Code pour le TP-API (R4.A.10)
 
-Base de code pour le **TP-API - Développement d'une interface pour API publique**
+Code pour le **TP-API - Développement d'une interface pour API publique**
 
-Ressource R4.A.10 Compléments Web JavaScript côté client (IUT INFO de Grenoble)
+Vous pouvez accéder à ce lien -> https://tpapi.thomasreymond.fr pour avoir accès au site qui héberge le projet.
+Le proxy permettant l'accés à l'api est hébergé sur https://api.tpapi.thomasreymond.fr et permet d'y accéder sans clé API.
+
+> [!Auteurs]
+>
+> DROUICHE Ilyés && REYMOND Thomas en classe A21
