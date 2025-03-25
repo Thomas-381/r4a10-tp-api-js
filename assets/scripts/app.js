@@ -144,17 +144,16 @@ function afficherLeaderboard() {
             });
         }
     });
+    // go to section
+    document.getElementById('section-leaderboard').scrollIntoView();
 }
 
-/*function recupNbReelTrophe(tag) {
-    const sendTag = tag.replace("#", "%23");
-    getJSON(proxy + encodeURIComponent("players/" + tag)).then(data => {
-        if (data) {
-            return data.trophies;
-        }
-    });
-}*/
-
+/**
+ * Convertit une couleur hexadécimale avec préfixe "0x" en format CSS "#RRGGBB".
+ *
+ * @param {string} hexaCouleur - Couleur au format "0xRRGGBB".
+ * @returns {string} - Couleur au format CSS "#RRGGBB".
+ */
 function convertisseurCouleur(hexaCouleur) {
     return `#${hexaCouleur.slice(2)}`;
 }
@@ -193,58 +192,76 @@ function distanceLevenshtein(str1, str2) {
     }
     return matrice[strlen1][strlen2];
 }
-
+/**
+ * Recherche des brawlers en utilisant la distance de Levenshtein,
+ * priorise les noms commençant par la chaîne de recherche.
+ *
+ * @async
+ * @returns {Promise<void>}
+ * @throws {Error} Si la récupération des données échoue.
+ */
 const rechercher = async () => {
-    recherche = champDeRecherche.value.trim();
-
+    const recherche = champDeRecherche.value.trim();
+    // Si la recherche est vide, on ne fait rien
     if (!recherche) {
         return;
     }
-
     btnLancerRecherche.disabled = true;
-    blocGifAttente.style.display = 'block'; // Apparition du gif d'attente
+    blocGifAttente.style.display = 'block';
 
     try {
         console.log("Recherche lancée");
+
+        // Effectuer une requête pour récupérer les données de l'API
         const response = await fetch(listeBrawlers);
         console.log("Réponse reçue");
 
+        // Vérifier si la réponse est valide
         if (!response.ok) {
             throw new Error('Erreur lors de la récupération des données');
         }
 
+        // Convertir la réponse en JSON
         const data = await response.json();
-        blocGifAttente.style.display = 'none';
+        console.log("Données de l'API", data);
+        blocGifAttente.style.display = 'none'; // Cache le gif d'attente
 
+        // Vérifier si des éléments sont présents dans les données
         if (data.items && data.items.length > 0) {
+            // Vider les résultats précédents
             blocResultats.innerHTML = '';
             const results = data.items.filter(brawler => {
-                return distanceLevenshtein(brawler.name.toLowerCase(), recherche.toLowerCase()) <= 3;
+                // Comparer chaque brawler avec la recherche via Levenshtein
+                return distanceLevenshtein(brawler.name.toLowerCase(), recherche.toLowerCase()) <= 3; // Seuil de 3 pour la distance de Levenshtein
             });
 
             if (results.length > 0) {
                 results.forEach(result => {
                     const a = document.createElement('a');
                     a.classList.add('res');
-                    a.textContent = result.name;
+                    a.textContent = result.brawler.name;
                     a.href = '#section-leaderboard';
                     a.addEventListener('click', () => {
-                        afficherLeaderboardBrawlers(result.id, result.name);
+                        afficherLeaderboardBrawlers(result.brawler.id, result.brawler.name);
                     });
                     blocResultats.appendChild(a);
                 });
             } else {
+                // Afficher un message si aucun résultat n'est trouvé
                 blocResultats.innerHTML = '<p>(Aucun résultat trouvé)</p>';
             }
         } else {
+            // Afficher un message si aucun élément n'est présent dans les données
             blocResultats.innerHTML = '<p>(Aucun résultat trouvé)</p>';
         }
     } catch (error) {
+        // En cas d'erreur, cacher le GIF d'attente et afficher un message d'erreur
         blocGifAttente.style.display = 'none';
         blocResultats.innerHTML = '<p>Erreur lors de la recherche.</p>';
         console.error(error);
     }
 };
+
 
 // Ajouter l'événement de clic sur le bouton de recherche
 btnLancerRecherche.addEventListener('click',rechercher);
