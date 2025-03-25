@@ -11,6 +11,11 @@ const btnFavoris = document.querySelector('#btn-favoris');
 const listeFavoris = document.querySelector("#liste-favoris");
 const blocGifAttente = document.querySelector('#bloc-gif-attente');
 const blocResultats = document.querySelector('#bloc-resultats');
+const listeBrawlersElement = document.querySelector('#liste-brawlers');
+const listeMapsElement = document.querySelector('#liste-maps');
+const leaderBoardElement = document.querySelector('#leaderBoard-Players-Brawlers');
+const nomBrawlerElement = document.querySelector('#nomBrawler');
+
 
 const btnAffichageListeBrawlers = document.getElementById('btnAffichageListeBrawlers');
 const btnAffichageRotaMaps = document.getElementById('btnAffichageRotaMaps');
@@ -18,7 +23,7 @@ const btnAffichageLeaderboard = document.getElementById('btnAffichageLeaderboard
 
 btnAffichageLeaderboard.addEventListener('click', afficherLeaderboard);
 btnAffichageListeBrawlers.addEventListener('click', afficherBrawlers);
-btnAffichageRotaMaps.addEventListener('click', afficherRotationMaps);
+btnAffichageRotaMaps.addEventListener('click', afficherMaps);
 const getJSON = async (url) => {
     try {
         const response = await fetch(url, {
@@ -65,20 +70,17 @@ function afficherBrawlers() {
 
 function afficherMaps() {
     getJSON(mapsDispos).then(data => {
-        if (data && data.eventRotation) {
+        if (data) {
             listeMapsElement.innerHTML = "";
-            data.eventRotation.forEach(event => {
+            data.forEach(event => {
                 let li = document.createElement('li');
                 li.innerHTML = `<span style="font-weight: bold;">${event.event.mode}</span> sur la carte <span style="font-weight: bold;">${event.event.map}</span>`;
-                liste.appendChild(li);
+                listeMapsElement.appendChild(li);
             });
         }
     });
 }
 
-
-function recupNbReelTrophe(tag) {
-}
 function afficherLeaderboardBrawlers(idBrawler, nomBrawler) {
     getJSON(proxy + encodeURIComponent("rankings/global/brawlers/" + idBrawler)).then(data => {
         if (data && data.items) {
@@ -110,7 +112,7 @@ function afficherLeaderboardBrawlers(idBrawler, nomBrawler) {
                 /*a.addEventListener('click', () => {
                     afficherInfoJoueurs(element.tag);
                 });*/
-                liste.appendChild(li);
+                leaderBoardElement.appendChild(li);
             });
         }
     });
@@ -155,14 +157,9 @@ function afficherLeaderboard() {
  * @returns {string} - Couleur au format CSS "#RRGGBB".
  */
 function convertisseurCouleur(hexaCouleur) {
+    // Supprimer le préfixe "0x" et ajouter "#"
     return `#${hexaCouleur.slice(2)}`;
 }
-
-    // Supprimer le préfixe "0x" et ajouter "#"
-    const cssColor = `#${hexaCouleur.slice(2)}`;
-    return cssColor;
-}
-
 // Fonction de calcul de la distance de Levenshtein
 function distanceLevenshtein(str1, str2) {
     const matrice = [];
@@ -201,11 +198,15 @@ function distanceLevenshtein(str1, str2) {
  * @throws {Error} Si la récupération des données échoue.
  */
 const rechercher = async () => {
-    const recherche = champDeRecherche.value.trim();
-    // Si la recherche est vide, on ne fait rien
+    // Récupérer la valeur de recherche et la convertir en minuscules pour une comparaison insensible à la casse
+    const recherche = champDeRecherche.value.trim().toLowerCase();
+
+    // Si la recherche est vide, ne rien faire
     if (!recherche) {
         return;
     }
+
+    // Désactiver le bouton de recherche et afficher le GIF d'attente
     btnLancerRecherche.disabled = true;
     blocGifAttente.style.display = 'block';
 
@@ -224,17 +225,35 @@ const rechercher = async () => {
         // Convertir la réponse en JSON
         const data = await response.json();
         console.log("Données de l'API", data);
-        blocGifAttente.style.display = 'none'; // Cache le gif d'attente
+
+        // Cacher le GIF d'attente
+        blocGifAttente.style.display = 'none';
 
         // Vérifier si des éléments sont présents dans les données
         if (data.items && data.items.length > 0) {
             // Vider les résultats précédents
             blocResultats.innerHTML = '';
-            const results = data.items.filter(brawler => {
-                // Comparer chaque brawler avec la recherche via Levenshtein
-                return distanceLevenshtein(brawler.name.toLowerCase(), recherche.toLowerCase()) <= 3; // Seuil de 3 pour la distance de Levenshtein
-            });
 
+            // Calculer un score pour chaque élément en fonction de la distance de Levenshtein
+            // et de la correspondance de début
+            const results = data.items
+                .map(brawler => {
+                    const name = brawler.name.toLowerCase();
+                    const levenshteinDistance = distanceLevenshtein(name, recherche);
+
+                    // Vérifier si le nom commence par la chaîne de recherche
+                    const startsWith = name.startsWith(recherche) ? 0 : 1;
+
+                    // Calculer le score : favoriser les correspondances de début
+                    const score = levenshteinDistance + startsWith * 2;
+                    return { brawler, score };
+                })
+                // Filtrer les résultats avec un score inférieur ou égal à 5
+                .filter(item => item.score <= 5)
+                // Trier les résultats par score croissant
+                .sort((a, b) => a.score - b.score);
+
+            // Afficher les résultats triés
             if (results.length > 0) {
                 results.forEach(result => {
                     const a = document.createElement('a');
@@ -263,15 +282,6 @@ const rechercher = async () => {
 };
 
 
-// Ajouter l'événement de clic sur le bouton de recherche
-btnLancerRecherche.addEventListener('click',rechercher);
-champDeRecherche.addEventListener('blur', rechercher);
-champDeRecherche.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') {
-        rechercher();
-    }
-});
-btnLancerRecherche.addEventListener('click', rechercher);
 
 function afficherFavoris() {
     const favoris = JSON.parse(localStorage.getItem("favoris")) || [];
@@ -307,6 +317,15 @@ btnFavoris.addEventListener("click", () => {
 });
 
 afficherFavoris();
+// Ajouter l'événement de clic sur le bouton de recherche
+btnLancerRecherche.addEventListener('click',rechercher);
+champDeRecherche.addEventListener('blur', rechercher);
+champDeRecherche.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        rechercher();
+    }
+});
+btnLancerRecherche.addEventListener('click', rechercher);
 
 
 
