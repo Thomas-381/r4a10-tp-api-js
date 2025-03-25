@@ -61,6 +61,7 @@ function afficherBrawlers() {
                 a.appendChild(img);
                 a.addEventListener('click', () => {
                     afficherLeaderboardBrawlers(element.id, element.name);
+                    leaderBoardElement.scrollIntoView();
                 });
                 listeBrawlersElement.appendChild(a);
             });
