@@ -1,11 +1,9 @@
 {
   "name": "proxy",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Proxy qui permet de faire des requêtes à l'API sans les contraintes de CORS",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "node server.js"
+    "serve": "node server.mjs"
   },
   "keywords": [],
   "author": "",
