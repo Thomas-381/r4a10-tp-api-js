@@ -96,7 +96,7 @@ input {
   border-radius: 5px;
   text-align: center;
   font-size: 16px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Optionnel : ajouter une ombre autour des éléments */
 }
 
 #liste-brawlers a:hover {
@@ -109,7 +109,7 @@ input {
 }
 
 .nomJoueur {
-  width: 200px;
+  width: 275px;
 }
 
 #leaderBoard-Players-Brawlers {
@@ -210,12 +210,23 @@ p.info-vide {
   margin: 40px;
   text-align: center;
 }
-
-#bloc-resultats p.res {
+#bloc-resultats {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  overflow-y: scroll;
+  scrollbar-width: auto;
+  max-height: 250px;
+}
+#bloc-resultats a.res {
   cursor: pointer;
+  text-decoration: none;
+  color: inherit;
 }
 
-#bloc-resultats p.res::before {
+#bloc-resultats a.res::before {
+  /* Affichage d'une flèche devant chaque résultat
+		(Cf. https://unicode-table.com/fr/21E8/ ) */
   content: "\21E8\00A0";
 }
 

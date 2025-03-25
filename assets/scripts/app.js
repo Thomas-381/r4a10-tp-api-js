@@ -1,7 +1,9 @@
-const proxy = "http://localhost:3000"; // Proxy local qui gère CORS
+const proxy = "http://localhost:3000/v1/"; // Proxy local qui gère CORS
 
-const listeBrawlers = `${proxy}/v1/brawlers`;
-const mapsDispos = `${proxy}/v1/events/rotation`;
+const limiteTailleRequete = 100; // Limite de joueurs à afficher dans le leaderboard
+
+const listeBrawlers = proxy + encodeURIComponent("brawlers");
+const mapsDispos = proxy + encodeURIComponent("events/rotation");
 
 const btnLancerRecherche = document.querySelector('#btn-lancer-recherche');
 const champDeRecherche = document.querySelector('#champDeRecherche');
@@ -9,16 +11,19 @@ const btnFavoris = document.querySelector('#btn-favoris');
 const listeFavoris = document.querySelector("#liste-favoris");
 const blocGifAttente = document.querySelector('#bloc-gif-attente');
 const blocResultats = document.querySelector('#bloc-resultats');
-const btnAffichageListeBrawlers = document.getElementById('btnAffichageListeBrawlers');
 const listeBrawlersElement = document.querySelector('#liste-brawlers');
 const listeMapsElement = document.querySelector('#liste-maps');
 const leaderBoardElement = document.querySelector('#leaderBoard-Players-Brawlers');
 const nomBrawlerElement = document.querySelector('#nomBrawler');
 
-let recherche = champDeRecherche.value.trim();
 
+const btnAffichageListeBrawlers = document.getElementById('btnAffichageListeBrawlers');
+const btnAffichageRotaMaps = document.getElementById('btnAffichageRotaMaps');
+const btnAffichageLeaderboard = document.getElementById('btnAffichageLeaderboard');
+
+btnAffichageLeaderboard.addEventListener('click', afficherLeaderboard);
 btnAffichageListeBrawlers.addEventListener('click', afficherBrawlers);
-
+btnAffichageRotaMaps.addEventListener('click', afficherMaps);
 const getJSON = async (url) => {
     try {
         const response = await fetch(url, {
@@ -65,11 +70,11 @@ function afficherBrawlers() {
 
 function afficherMaps() {
     getJSON(mapsDispos).then(data => {
-        if (data && data.eventRotation) {
+        if (data) {
             listeMapsElement.innerHTML = "";
-            data.eventRotation.forEach(event => {
+            data.forEach(event => {
                 let li = document.createElement('li');
-                li.textContent = `${event.event.mode} - ${event.event.map}`;
+                li.innerHTML = `<span style="font-weight: bold;">${event.event.mode}</span> sur la carte <span style="font-weight: bold;">${event.event.map}</span>`;
                 listeMapsElement.appendChild(li);
             });
         }
@@ -77,10 +82,10 @@ function afficherMaps() {
 }
 
 function afficherLeaderboardBrawlers(idBrawler, nomBrawler) {
-    getJSON(`${proxy}/v1/rankings/global/brawlers/${idBrawler}`).then(data => {
+    getJSON(proxy + encodeURIComponent("rankings/global/brawlers/" + idBrawler)).then(data => {
         if (data && data.items) {
             leaderBoardElement.innerHTML = "";
-            nomBrawlerElement.innerHTML = nomBrawler;
+            nomBrawlerElement.innerHTML = "avec " + nomBrawler;
             data.items.forEach(element => {
                 let li = document.createElement('li');
                 let baliseNom = document.createElement('p');
@@ -104,16 +109,58 @@ function afficherLeaderboardBrawlers(idBrawler, nomBrawler) {
                 li.appendChild(baliseNom);
                 li.appendChild(baliseImageTrophes);
                 li.appendChild(baliseTrophes);
+                /*a.addEventListener('click', () => {
+                    afficherInfoJoueurs(element.tag);
+                });*/
                 leaderBoardElement.appendChild(li);
             });
         }
     });
 }
+function afficherLeaderboard() {
+    getJSON(proxy + encodeURIComponent(`rankings/global/players?limit=${limiteTailleRequete}`)).then(data => {
+        if (data && data.items) {
+            let liste = document.getElementById('leaderBoard-Players-Brawlers');
+            liste.innerHTML = "";
+            document.getElementById('nomBrawler').innerHTML = ": ";
+            data.items.forEach(element => {
+                let li = document.createElement('li');
+                let baliseNom = document.createElement('p');
+                let baliseRang = document.createElement('p');
+                let baliseImage = document.createElement('img');
 
-function convertisseurCouleur(hexaCouleur) {
-    return `#${hexaCouleur.slice(2)}`;
+                baliseImage.src = 'https://cdn.brawlify.com/profile-icons/regular/' + element.icon.id + '.png';
+                baliseImage.classList.add('iconeJoueur');
+                baliseNom.textContent = element.name;
+                baliseNom.style.color = convertisseurCouleur(element.nameColor);
+                baliseNom.classList.add('nomJoueur');
+                baliseRang.textContent = element.rank;
+
+                li.appendChild(baliseRang);
+                li.appendChild(baliseImage);
+                li.appendChild(baliseNom);
+                /*a.addEventListener('click', () => {
+                    afficherInfoJoueurs(element.tag);
+                });*/
+                liste.appendChild(li);
+            });
+        }
+    });
+    // go to section
+    document.getElementById('section-leaderboard').scrollIntoView();
 }
 
+/**
+ * Convertit une couleur hexadécimale avec préfixe "0x" en format CSS "#RRGGBB".
+ *
+ * @param {string} hexaCouleur - Couleur au format "0xRRGGBB".
+ * @returns {string} - Couleur au format CSS "#RRGGBB".
+ */
+function convertisseurCouleur(hexaCouleur) {
+    // Supprimer le préfixe "0x" et ajouter "#"
+    return `#${hexaCouleur.slice(2)}`;
+}
+// Fonction de calcul de la distance de Levenshtein
 function distanceLevenshtein(str1, str2) {
     const matrice = [];
     let strlen1 = str1.length;
@@ -142,59 +189,99 @@ function distanceLevenshtein(str1, str2) {
     }
     return matrice[strlen1][strlen2];
 }
-
+/**
+ * Recherche des brawlers en utilisant la distance de Levenshtein,
+ * priorise les noms commençant par la chaîne de recherche.
+ *
+ * @async
+ * @returns {Promise<void>}
+ * @throws {Error} Si la récupération des données échoue.
+ */
 const rechercher = async () => {
-    recherche = champDeRecherche.value.trim();
+    // Récupérer la valeur de recherche et la convertir en minuscules pour une comparaison insensible à la casse
+    const recherche = champDeRecherche.value.trim().toLowerCase();
 
+    // Si la recherche est vide, ne rien faire
     if (!recherche) {
         return;
     }
 
+    // Désactiver le bouton de recherche et afficher le GIF d'attente
     btnLancerRecherche.disabled = true;
     blocGifAttente.style.display = 'block';
 
-    const apiUrl = `${proxy}/v1/brawlers`;
-
     try {
-        const response = await fetch(apiUrl);
+        console.log("Recherche lancée");
 
+        // Effectuer une requête pour récupérer les données de l'API
+        const response = await fetch(listeBrawlers);
+        console.log("Réponse reçue");
+
+        // Vérifier si la réponse est valide
         if (!response.ok) {
             throw new Error('Erreur lors de la récupération des données');
         }
 
+        // Convertir la réponse en JSON
         const data = await response.json();
+        console.log("Données de l'API", data);
+
+        // Cacher le GIF d'attente
         blocGifAttente.style.display = 'none';
 
+        // Vérifier si des éléments sont présents dans les données
         if (data.items && data.items.length > 0) {
+            // Vider les résultats précédents
             blocResultats.innerHTML = '';
-            const results = data.items.filter(brawler => {
-                return distanceLevenshtein(brawler.name.toLowerCase(), recherche.toLowerCase()) <= 3;
-            });
 
+            // Calculer un score pour chaque élément en fonction de la distance de Levenshtein
+            // et de la correspondance de début
+            const results = data.items
+                .map(brawler => {
+                    const name = brawler.name.toLowerCase();
+                    const levenshteinDistance = distanceLevenshtein(name, recherche);
+
+                    // Vérifier si le nom commence par la chaîne de recherche
+                    const startsWith = name.startsWith(recherche) ? 0 : 1;
+
+                    // Calculer le score : favoriser les correspondances de début
+                    const score = levenshteinDistance + startsWith * 2;
+                    return { brawler, score };
+                })
+                // Filtrer les résultats avec un score inférieur ou égal à 5
+                .filter(item => item.score <= 5)
+                // Trier les résultats par score croissant
+                .sort((a, b) => a.score - b.score);
+
+            // Afficher les résultats triés
             if (results.length > 0) {
                 results.forEach(result => {
-                    const p = document.createElement('p');
-                    p.classList.add('res');
-                    p.textContent = result.name;
-                    p.addEventListener('click', () => {
-                        afficherLeaderboardBrawlers(result.id, result.name);
+                    const a = document.createElement('a');
+                    a.classList.add('res');
+                    a.textContent = result.brawler.name;
+                    a.href = '#section-leaderboard';
+                    a.addEventListener('click', () => {
+                        afficherLeaderboardBrawlers(result.brawler.id, result.brawler.name);
                     });
-                    blocResultats.appendChild(p);
+                    blocResultats.appendChild(a);
                 });
             } else {
+                // Afficher un message si aucun résultat n'est trouvé
                 blocResultats.innerHTML = '<p>(Aucun résultat trouvé)</p>';
             }
         } else {
+            // Afficher un message si aucun élément n'est présent dans les données
             blocResultats.innerHTML = '<p>(Aucun résultat trouvé)</p>';
         }
     } catch (error) {
+        // En cas d'erreur, cacher le GIF d'attente et afficher un message d'erreur
         blocGifAttente.style.display = 'none';
         blocResultats.innerHTML = '<p>Erreur lors de la recherche.</p>';
         console.error(error);
     }
 };
 
-btnLancerRecherche.addEventListener('click', rechercher);
+
 
 function afficherFavoris() {
     const favoris = JSON.parse(localStorage.getItem("favoris")) || [];
@@ -230,6 +317,15 @@ btnFavoris.addEventListener("click", () => {
 });
 
 afficherFavoris();
+// Ajouter l'événement de clic sur le bouton de recherche
+btnLancerRecherche.addEventListener('click',rechercher);
+champDeRecherche.addEventListener('blur', rechercher);
+champDeRecherche.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        rechercher();
+    }
+});
+btnLancerRecherche.addEventListener('click', rechercher);
 
 
 
