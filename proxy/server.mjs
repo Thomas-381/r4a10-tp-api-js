@@ -1,8 +1,8 @@
 import express from 'express';
 import fetch from 'node-fetch';
 const app = express();
-const port = 3000;
-const apiToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6ImY3YjE3YjUyLTE2OGMtNGJmZi04YjA4LWNkMzRjZjE2YzhlZiIsImlhdCI6MTc0MjkxNDM4NCwic3ViIjoiZGV2ZWxvcGVyL2I4YTQ5MGE0LWQ3MmUtZDVkYy1lYWYyLTExOGVmNzNhOTVhMyIsInNjb3BlcyI6WyJicmF3bHN0YXJzIl0sImxpbWl0cyI6W3sidGllciI6ImRldmVsb3Blci9zaWx2ZXIiLCJ0eXBlIjoidGhyb3R0bGluZyJ9LHsiY2lkcnMiOlsiMTMwLjE5MC4xMTQuMjExIl0sInR5cGUiOiJjbGllbnQifV19.cHo-LojB2WSIesawpedQIVWH1PY7GB3ziNcM9lYt0A0fMOoCuV6MCmhlmjygcvLuxbtzqh-v4A0Pt6esybA92g";
+const port = 3000; // Port sur lequel tournera le serveur
+const apiToken = "CLÉ API";
 app.use(express.json());
 
 // Middleware pour gérer les en-têtes CORS
